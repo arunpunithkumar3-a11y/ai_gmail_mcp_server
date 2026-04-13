@@ -16,16 +16,12 @@ SCOPES = [
     'https://www.googleapis.com/auth/gmail.compose',
 ]
 
-def get_tokens(user_id):
-    res = requests.get(f"http://127.0.0.1:8000/gmail/g/user/{user_id}")
-    return res.json()
 
-def get_gmail_service(user_id: str):
-    tokens = get_tokens(user_id)
 
+def get_gmail_service(user_data: dict):
     creds = Credentials(
-        token=tokens["access_token"],
-        refresh_token=tokens["refresh_token"],
+        token=user_data["access_token"],
+        refresh_token=user_data["refresh_token"],
         token_uri="https://oauth2.googleapis.com/token",
         client_id=os.getenv("CLIENT_ID"),
         client_secret=os.getenv("CLIENT_SECRET"),
