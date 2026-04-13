@@ -30,7 +30,7 @@ def extract_body(payload):
 
 
 @mcp.tool
-def read_emails(user_id: str, max_results=10, query=''):
+def read_emails(user_data: dict, max_results=10, query=''):
     """
     query examples:
       'is:unread'           → unread emails
@@ -38,7 +38,7 @@ def read_emails(user_id: str, max_results=10, query=''):
       'subject:invoice'     → by subject
       'is:unread label:inbox' → unread inbox
     """
-    service = get_gmail_service(user_id)
+    service = get_gmail_service(user_data)
     results = service.users().messages().list(
         userId='me',
         maxResults=max_results,
@@ -76,8 +76,8 @@ def read_emails(user_id: str, max_results=10, query=''):
 
 
 @mcp.tool
-def send_email(user_id: str, to, subject, body, cc=None, bcc=None, attachment_path=None):
-    service = get_gmail_service(user_id)
+def send_email(user_data: dict, to, subject, body, cc=None, bcc=None, attachment_path=None):
+    service = get_gmail_service(user_data)
 
     msg = MIMEMultipart()
     msg['To']      = to
@@ -107,8 +107,8 @@ def send_email(user_id: str, to, subject, body, cc=None, bcc=None, attachment_pa
 
 
 @mcp.tool
-def reply_to_email(user_id: str, message_id, reply_body):
-    service = get_gmail_service(user_id)
+def reply_to_email(user_data: dict, message_id, reply_body):
+    service = get_gmail_service(user_data)
 
     original = service.users().messages().get(
         userId='me',
@@ -139,8 +139,8 @@ def reply_to_email(user_id: str, message_id, reply_body):
     return result    
 
 @mcp.tool
-def mark_as_read(user_id: str, message_id):
-    service = get_gmail_service(user_id)
+def mark_as_read(user_data: dict, message_id):
+    service = get_gmail_service(user_data)
     service.users().messages().modify(
         userId='me', id=message_id,
         body={'removeLabelIds': ['UNREAD']}
@@ -148,8 +148,8 @@ def mark_as_read(user_id: str, message_id):
     print(f"Marked as read: {message_id}")
 
 @mcp.tool
-def archive_email(user_id: str, message_id):
-    service = get_gmail_service(user_id)
+def archive_email(user_data: dict, message_id):
+    service = get_gmail_service(user_data)
     service.users().messages().modify(
         userId='me', id=message_id,
         body={'removeLabelIds': ['INBOX']}
@@ -157,8 +157,8 @@ def archive_email(user_id: str, message_id):
     print(f"Archived: {message_id}")
 
 @mcp.tool
-def trash_email(user_id: str, message_id):
-    service = get_gmail_service(user_id)
+def trash_email(user_data:dict, message_id):
+    service = get_gmail_service(user_data)
     service.users().messages().trash(userId='me', id=message_id).execute()
     print(f"Trashed: {message_id}")
 
