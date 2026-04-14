@@ -20,7 +20,6 @@ Create a Google Cloud project
 Enable Gmail API
 Create OAuth credentials
 Add your authentication logic in auth.py
-Make sure get_gmail_service(user_id) returns a valid Gmail service
 3. Run the server
 python main.py
 
