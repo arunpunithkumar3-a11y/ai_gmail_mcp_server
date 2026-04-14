@@ -100,7 +100,7 @@ def send_email(user_data: dict, to, subject, body, cc=None, bcc=None, attachment
         body={'raw': raw}
     ).execute()
 
-    print(f"Email sent! Message ID: {result['id']}")
+
     return result
 
 
@@ -133,7 +133,6 @@ def reply_to_email(user_data: dict, message_id, reply_body):
         body={'raw': raw, 'threadId': thread_id}
     ).execute()
 
-    print(f"Reply sent! Message ID: {result['id']}")
     return result    
 
 @mcp.tool
@@ -143,8 +142,9 @@ def mark_as_read(user_data: dict, message_id):
         userId='me', id=message_id,
         body={'removeLabelIds': ['UNREAD']}
     ).execute()
-    print(f"Marked as read: {message_id}")
-
+    return {
+        "message":"Marked as read successfully"
+    }
 @mcp.tool
 def archive_email(user_data: dict, message_id):
     service = get_gmail_service(user_data)
@@ -152,15 +152,17 @@ def archive_email(user_data: dict, message_id):
         userId='me', id=message_id,
         body={'removeLabelIds': ['INBOX']}
     ).execute()
-    print(f"Archived: {message_id}")
+    return {
+        "message":"Archived email successfully"
+    }
 
 @mcp.tool
 def trash_email(user_data: dict, message_id):
     service = get_gmail_service(user_data)
     service.users().messages().trash(userId='me', id=message_id).execute()
-    print(f"Trashed: {message_id}")
-
-
+    return {
+        "messages":"Email put to trash successfully"
+    }
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
